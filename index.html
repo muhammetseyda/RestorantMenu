@@ -23,7 +23,10 @@
                 <img src="logo.jpg" alt="logo" width="100" height="100" style="border-radius: 30px;">
             </div>
             <div class="title" style="align-content: center; padding-left: 20px;">
-                <h3>Yazılımcı Sarman Cafe</h3>
+                <h3>Yazılımcı Sarman Cafe <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sepetModal">
+                    Sepet <span id="sepet-count" class="badge bg-secondary">0</span>
+                </button></i> Sepet
+                </button></h3>
             </div>
 
         </div>
@@ -112,6 +115,46 @@
               </div>
         </div>
     </div>
+    <div class="modal fade" id="urunModal" tabindex="-1" aria-labelledby="urunModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="urunModalLabel">Ürün Detayları</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Ürün Detayları Burada Görüntülenecek -->
+              <img id="modalUrunGorsel" src="" alt="Ürün Görseli" width="100%">
+              <h3 id="modalUrunAdi"></h3>
+              <h5 id="modalUrunAciklama"></h5>
+              <h6 id="modalUrunFiyat"></h6>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="sepetModal" tabindex="-1" aria-labelledby="sepetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sepetModalLabel">Sepetim</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="sepet-icerik"></div>
+                    <div class="d-flex justify-content-between">
+                        <h5>Toplam: <span id="toplam-tutar">0</span> TL</h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary">Satın Al</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
 fetch('https://muhammetseyda.github.io/restoran-menu.json')
     .then(response => response.json())
@@ -130,20 +173,20 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         kahvaltiYiyecekler.forEach(urun => {
             const urunHTML = `
                 <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -152,21 +195,21 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         });
         kahvaltiicecekler.forEach(urun => {
             const urunHTML = `
-                <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;" >
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -176,20 +219,20 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         ögleYiyecekler.forEach(urun => {
             const urunHTML = `
                 <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -199,20 +242,20 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         ögleicecekler.forEach(urun => {
             const urunHTML = `
                 <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -222,20 +265,20 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         aksamYiyecekler.forEach(urun => {
             const urunHTML = `
                 <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -245,20 +288,20 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         aksamicecekler.forEach(urun => {
             const urunHTML = `
                 <div class="tekurun" style="padding: 5px; flex-direction: row;display: flex; margin-bottom: 20px; border-color: black; border-width: 1px; border-style: solid;">
-                    <div class="tekurungörsel">
+                    <div class="tekurungörsel" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <img src="${urun.image}" alt="${urun.name}" width="70" height="70" style="margin: 10px;">
                     </div>
-                    <div class="tekurundesc">
+                    <div class="tekurundesc" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <div class="tekuruntitledesc" style="align-content: center; padding-left: 20px; width: 200px;">
                             <h3>${urun.name}</h3>
                             <h5>${urun.description}</h5>
                         </div>
                     </div>
-                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;">
+                    <div class="tekurunfiyat" style="align-content: center; padding: 20px;" onclick="urunDetaylariniGoster('${urun.name}', '${urun.description}', '${urun.price}', '${urun.image}')">
                         <h6>${urun.price} TL</h6>
                     </div>
                     <div class="tekurunsepet" style="align-content: center; padding: 15px;">
-                        <button class="btn btn-primary" onclick="console.log('${urun.name} sepete eklendi!');">Sepete ekle</button>
+                        <button class="btn btn-primary" onclick="urunSepeteEkle(${urun.id}, '${urun.name}', ${urun.price}, '${urun.image}');">Sepete ekle</button>
                     </div>
                 </div>
             `;
@@ -268,6 +311,86 @@ fetch('https://muhammetseyda.github.io/restoran-menu.json')
         
     })
     .catch(error => console.error('Veri alınırken hata oluştu:', error));
+
+    </script>
+    <script>
+        function urunDetaylariniGoster(name, description, price, image) {
+    // Modal içeriğini doldur
+    document.getElementById('modalUrunGorsel').src = image;
+    document.getElementById('modalUrunAdi').textContent = name;
+    document.getElementById('modalUrunAciklama').textContent = description;
+    document.getElementById('modalUrunFiyat').textContent = price + ' TL';
+
+    // Modalı göster
+    var urunModal = new bootstrap.Modal(document.getElementById('urunModal'));
+    urunModal.show();
+}
+    </script>
+    <script>
+let sepet = [];
+
+function urunSepeteEkle(id, name, price, image) {
+    const mevcutUrun = sepet.find(item => item.id === id);
+    if (mevcutUrun) {
+        mevcutUrun.adet++;
+    } else {
+        sepet.push({ id, name, price, image, adet: 1 });
+    }
+    sepetGuncelle();
+}
+
+function sepetGuncelle() {
+    const sepetIcerik = document.getElementById('sepet-icerik');
+    const toplamTutarSpan = document.getElementById('toplam-tutar');
+    const sepetCount = document.getElementById('sepet-count');
+
+    sepetIcerik.innerHTML = '';
+    let toplamTutar = 0;
+
+    sepet.forEach(item => {
+        const urunTutar = item.price * item.adet;
+        toplamTutar += urunTutar;
+
+        const urunHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6>${item.name}</h6>
+                    <p>${item.price} TL x <input type="number" value="${item.adet}" min="1" class="adet-input" data-id="${item.id}" style="width: 50px;"> = ${urunTutar} TL</p>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="urunCikar(${item.id})">Kaldır</button>
+            </div>
+        `;
+        sepetIcerik.innerHTML += urunHTML;
+    });
+
+    toplamTutarSpan.textContent = toplamTutar.toFixed(2);
+    sepetCount.textContent = sepet.length;
+
+    // Adet değiştirme olayını bağla
+    document.querySelectorAll('.adet-input').forEach(input => {
+        input.addEventListener('change', adetDegistir);
+    });
+}
+
+function urunCikar(urunId) {
+    sepet = sepet.filter(item => item.id !== urunId);
+    sepetGuncelle();
+}
+
+function adetDegistir(event) {
+    const urunId = parseInt(event.target.getAttribute('data-id'));
+    const yeniAdet = parseInt(event.target.value);
+
+    if (yeniAdet <= 0) {
+        urunCikar(urunId);
+    } else {
+        const urun = sepet.find(item => item.id === urunId);
+        if (urun) {
+            urun.adet = yeniAdet;
+        }
+    }
+    sepetGuncelle();
+}
 
     </script>
 </body>
